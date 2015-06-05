@@ -6,56 +6,54 @@ class cellSprite( pygame.sprite.Sprite ):
     BLUE = (0, 0, 255)
     PURPLE = (200, 0, 200)
     
-    COLOUR_DEAD = BLACK
-    COLOUR_ALIVE = GREEN
-    COLOUR_FLAG_P1 = BLUE
-    COLOUR_FLAG_P2 = PURPLE
+    COLOR_DEAD = BLACK
+    COLOR_ALIVE = GREEN
     
     HEIGHT = 10
     WIDTH = 10
     FONT_DEBUG = 10
 
     NONE = 0
-    P_ONE = 1
-    P_TWO = 2
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.alive = False
         self.flag = False
         self.owner = cellSprite.NONE
+        self.owner_color = cellSprite.COLOR_ALIVE
         self.x_pos = x
         self.y_pos = y
         self.num_nbrs = 0
         
-        self.image = pygame.Surface( (self.WIDTH, self.HEIGHT) )
-        self.image.fill( self.COLOUR_DEAD )
+        self.image = pygame.Surface( (cellSprite.WIDTH, cellSprite.HEIGHT) )
+        self.image.fill( cellSprite.COLOR_DEAD )
 
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-    def revive( self ):
+    def revive( self, owner, color ):
         self.alive = True
-        self.image.fill( self.COLOUR_ALIVE )
+        self.owner = owner
+        self.owner_color = color
+        self.image.fill( color )
 
     def is_alive( self ):
         return self.alive
 
     def kill( self ):
         self.alive = False
-        self.image.fill( self.COLOUR_DEAD )
+        self.owner = cellSprite.NONE
+        self.image.fill( cellSprite.COLOR_DEAD )
 
     def is_flag( self ):
         return self.flag
 
-    def set_flag( self, player ):
-        if player == cellSprite.P_ONE:
-            self.image.fill( cellSprite.COLOUR_FLAG_P1 )
-            self.owner = player
-        elif player == cellSprite.P_TWO:
-            self.image.fill( cellSprite.COLOUR_FLAG_P2 )
-            self.owner = player
+    def set_flag( self, player, color ):
+        self.flag = True
+        self.alive = True
+        self.image.fill( color )
+        self.owner = player
 
     def set_owner( self, player ):
         self.owner = player
@@ -73,18 +71,13 @@ class cellSprite( pygame.sprite.Sprite ):
         # game rules
         if self.alive == True:
             if self.num_nbrs < 2:
-                    self.alive = False
+                    self.kill()
             elif self.num_nbrs > 3:
-                    self.alive = False
+                    self.kill()
         else:
             if self.num_nbrs == 3:
-                    self.alive = True
-        # update cell image     
-        if self.alive == False:
-            self.image.fill( self.COLOUR_DEAD )
-        else:
-            self.image.fill( self.COLOUR_ALIVE )
-        
+                    self.revive( cellSprite.NONE, cellSprite.COLOR_ALIVE )
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x_pos
         self.rect.y = self.y_pos

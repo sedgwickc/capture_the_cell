@@ -9,27 +9,48 @@ def main():
     WHITE = ( 255, 255, 255 )
     GREY = ( 190, 190, 190 )
     BLACK = ( 0, 0, 0 )
+    RED = ( 255, 0, 0 )
+    YELLOW = ( 255, 255, 0 )
+
+    P1_WIN = 'Player One Wins!'
+    P2_WIN = 'Player Two Wins!'
 
     capCellGame = CapCellGameClass.CapCellGame()
     screen_height = capCellGame.get_screen_height()
     screen_width = capCellGame.get_screen_width()
-    frame_delay = 0.02
+    frame_delay = 0.1
 
     winSurface = pygame.display.set_mode( (screen_width, screen_height), 0, 32 )
     pygame.display.set_caption( 'Capture the Cell' )
 
+    # set texts used in game
     basicFont = pygame.font.SysFont( None, 25 )
     text_start = basicFont.render( 'START', 0, BLACK, GREY )
     text_start_rect = text_start.get_rect()
     text_start_rect.bottomleft = winSurface.get_rect().bottomleft
     
-    text_stop = basicFont.render( 'STOP', 0, BLACK, GREY )
-    text_stop_rect = text_stop.get_rect()
-    text_stop_rect.bottomleft = winSurface.get_rect().bottomleft
-
     text_gen = basicFont.render( 'GEN: ' + str( capCellGame.get_gen() ), 0, BLACK, GREY )
     text_gen_rect = text_gen.get_rect()
     text_gen_rect.midbottom = winSurface.get_rect().midbottom
+    
+    text_round = basicFont.render( 'ROUND: ' + str( capCellGame.get_round() ), 0, BLACK, GREY )
+    text_round_rect = text_round.get_rect()
+    text_round_rect.bottomright = winSurface.get_rect().bottomright
+    
+    text_prompt_p1 = basicFont.render( 'PLAYER ONE: Place Cells', 0, BLACK, GREY )
+    text_prompt_p1_rect = text_prompt_p1.get_rect()
+    text_prompt_p1_rect.topleft = winSurface.get_rect().topleft
+    
+    text_prompt_p2 = basicFont.render( 'PLAYER TWO: Place Cells', 0, BLACK, GREY )
+    text_prompt_p2_rect = text_prompt_p2.get_rect()
+    text_prompt_p2_rect.topleft = winSurface.get_rect().topleft
+    
+    text_done = basicFont.render( 'DONE', 0, BLACK, GREY )
+    text_done_rect = text_done.get_rect()
+    text_done_rect.topright = winSurface.get_rect().topright
+
+
+    game_over = capCellGame.is_game_over()
 
     while True:
 
@@ -40,24 +61,46 @@ def main():
                 sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                if capCellGame.get_round_state() == False:
+                if capCellGame.in_round() == False:
                     if text_start_rect.collidepoint( pos ):
                         capCellGame.start_round()
+                    if text_done_rect.collidepoint( pos ):
+                        if capCellGame.get_turn_p1() == True:
+                            capCellGame.set_turn_p1()
+                            capCellGame.set_turn_p2()
+                        else:
+                            capCellGame.set_turn_p2()
                     capCellGame.select_cell( pos )
-                else:
-                    if text_stop_rect.collidepoint( pos ):
-                        capCellGame.end_round()
 
         capCellGame.update()
+        game_over = capCellGame.is_game_over()
 
         winSurface.fill( GREY )
-        if capCellGame.get_round_state() == True:
-            winSurface.blit( text_stop, text_stop_rect )
-        else:
-            winSurface.blit( text_start, text_start_rect )
+        if game_over != True:
+            if capCellGame.in_round() != True:
+                if capCellGame.get_turn_p1() == True:
+                    winSurface.blit( text_prompt_p1, text_prompt_p1_rect )
+                    winSurface.blit( text_done, text_done_rect )
+                elif capCellGame.get_turn_p2() == True:
+                    winSurface.blit( text_prompt_p2, text_prompt_p2_rect )
+                    winSurface.blit( text_done, text_done_rect )
+                else:
+                    winSurface.blit( text_start, text_start_rect )
+
         text_gen = basicFont.render( 'GEN: ' + str( capCellGame.get_gen() ), 0, BLACK, GREY )
         winSurface.blit( text_gen, text_gen_rect )
+        
+        text_round = basicFont.render( 'ROUND: ' + str( capCellGame.get_round() ), 0, BLACK, GREY )
+        winSurface.blit( text_round, text_round_rect )
+
         capCellGame.draw_cells( winSurface )
+
+        if game_over == True:
+            winFont = pygame.font.SysFont( None, 45 )
+            text_win = winFont.render( str( capCellGame.get_winner() ), 0, YELLOW, None )
+            text_win_rect = text_win.get_rect()
+            text_win_rect.center = winSurface.get_rect().center
+            winSurface.blit( text_win, text_win_rect )
 
         time.sleep(frame_delay)
         pygame.display.update()
