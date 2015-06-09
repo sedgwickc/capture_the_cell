@@ -142,24 +142,31 @@ class CapCellGame():
         return self.game_over
    
     def select_cell( self, pos, cell_type ):
-        
         for cell in self.cells:
             if cell.get_rect().collidepoint( pos ):
-                if cell.is_alive():
-                    cell.kill()
+                owner = cell.get_owner()
+                if self.turn_p1 == True and owner != CapCellGame.P_TWO:
+                    if cell.is_alive():
+                        cell.kill()
+                        continue
+                    if cell_type == CellClass.cellSprite.CELL_TYPES.STATIC:
+                        color = CapCellGame.COLOR_P1_STATIC
+                    else:
+                        color = CapCellGame.P1_COLOR
+                    turn = CapCellGame.P_ONE
+                elif self.turn_p2 == True and owner != CapCellGame.P_ONE:
+                    if cell.is_alive():
+                        cell.kill()
+                        continue
+                    if cell_type == CellClass.cellSprite.CELL_TYPES.STATIC:
+                        color = CapCellGame.COLOR_P2_STATIC
+                    else:
+                        color = CapCellGame.P2_COLOR
+                    turn = CapCellGame.P_TWO
                 else:
-                    if self.turn_p1 == True:
-                        if cell_type == CellClass.cellSprite.CELL_TYPES.STATIC:
-                            color = CapCellGame.COLOR_P1_STATIC
-                        else:
-                            color = CapCellGame.P1_COLOR
-                        cell.revive(CapCellGame.P_ONE, color, cell_type)
-                    elif self.turn_p2 == True:
-                        if cell_type == CellClass.cellSprite.CELL_TYPES.STATIC:
-                            color = CapCellGame.COLOR_P2_STATIC
-                        else:
-                            color = CapCellGame.P2_COLOR
-                        cell.revive(CapCellGame.P_TWO, color, cell_type)
+                    continue
+
+                cell.revive(turn, color, cell_type)
 
     def draw_cells( self, surface ):
         self.cells.draw( surface )

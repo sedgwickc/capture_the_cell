@@ -23,7 +23,7 @@ class cellSprite( pygame.sprite.Sprite ):
         self.alive = False
         self.flag = False
         self.owner = cellSprite.NONE
-        self.owner_color = cellSprite.COLOR_ALIVE
+        self.owner_color = cellSprite.COLOR_DEAD
         self.cell_type = cellSprite.CELL_TYPES.NORM
         self.life_span = -1
         self.x_pos = x
