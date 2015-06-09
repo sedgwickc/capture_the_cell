@@ -4,8 +4,12 @@ import CellClass
 class CapCellGame():
     BLACK = (0, 0, 0)
     GREEN = (0, 255, 0)
-    BLUE = (0, 0, 255)
-    PURPLE = (200, 0, 200)
+    BLUE = ( 0, 0, 255 )
+    CYAN = (0, 190, 190)
+    PURPLE = ( 190, 0, 190 )
+    RED = (255, 0, 0)
+    PINK = ( 255, 20, 147 )
+    DODGER_BLUE =  ( 30, 144, 255 )
     
     NONE = 0
     P_ONE = 1
@@ -18,8 +22,10 @@ class CapCellGame():
 
     COLOR_DEAD = BLACK
     COLOR_ALIVE = GREEN
-    COLOR_FLAG_P1 = BLUE
-    COLOR_FLAG_P2 = PURPLE
+    COLOR_P1_STATIC = DODGER_BLUE
+    COLOR_P2_STATIC = PINK
+    COLOR_FLAG_P1 = CYAN
+    COLOR_FLAG_P2 = RED
     
     GRID_HEIGHT = 50
     GRID_WIDTH = 50
@@ -71,7 +77,7 @@ class CapCellGame():
         self.flag_p1.append(self.cell_grid[CapCellGame.GRID_WIDTH-3][CapCellGame.GRID_HEIGHT-2])
         self.flag_p1.append(self.cell_grid[CapCellGame.GRID_WIDTH-3][CapCellGame.GRID_HEIGHT-3])
         for cell in self.flag_p1:
-            cell.set_flag(CapCellGame.P_ONE, CapCellGame.P1_COLOR)
+            cell.set_flag(CapCellGame.P_ONE, CapCellGame.COLOR_FLAG_P1)
 
         self.flag_p2 = []
         self.flag_p2.append(self.cell_grid[1][1])
@@ -79,7 +85,7 @@ class CapCellGame():
         self.flag_p2.append(self.cell_grid[2][1])
         self.flag_p2.append(self.cell_grid[2][2])
         for cell in self.flag_p2:
-            cell.set_flag(CapCellGame.P_TWO, CapCellGame.P2_COLOR)
+            cell.set_flag(CapCellGame.P_TWO, CapCellGame.COLOR_FLAG_P2)
 
     def get_screen_height( self ):
         height = self.grid_height * (CellClass.cellSprite.HEIGHT + self.margin) 
@@ -135,16 +141,25 @@ class CapCellGame():
     def is_game_over( self ):
         return self.game_over
    
-    def select_cell( self, pos ):
+    def select_cell( self, pos, cell_type ):
+        
         for cell in self.cells:
             if cell.get_rect().collidepoint( pos ):
                 if cell.is_alive():
                     cell.kill()
                 else:
                     if self.turn_p1 == True:
-                        cell.revive(CapCellGame.P_ONE, CapCellGame.P1_COLOR)
-                    else:
-                        cell.revive(CapCellGame.P_TWO, CapCellGame.P2_COLOR)
+                        if cell_type == CellClass.cellSprite.CELL_TYPES.STATIC:
+                            color = CapCellGame.COLOR_P1_STATIC
+                        else:
+                            color = CapCellGame.P1_COLOR
+                        cell.revive(CapCellGame.P_ONE, color, cell_type)
+                    elif self.turn_p2 == True:
+                        if cell_type == CellClass.cellSprite.CELL_TYPES.STATIC:
+                            color = CapCellGame.COLOR_P2_STATIC
+                        else:
+                            color = CapCellGame.P2_COLOR
+                        cell.revive(CapCellGame.P_TWO, color, cell_type)
 
     def draw_cells( self, surface ):
         self.cells.draw( surface )
@@ -167,6 +182,8 @@ class CapCellGame():
 
             for i in range( 0, self.grid_height ):
                 for j in range( 0, self.grid_width ):
+                    if self.cell_grid[i][j].get_type() == CellClass.cellSprite.CELL_TYPES.STATIC:
+                        continue
                     neighbors = [] 
                     if i == 0:
                         if j == 0:

@@ -1,6 +1,7 @@
 import pygame, sys, time
-import CellClass, CapCellGameClass
+import CapCellGameClass
 from pygame.locals import *
+from CellClass import cellSprite
 
 def main():
 
@@ -49,9 +50,10 @@ def main():
     text_done_rect = text_done.get_rect()
     text_done_rect.topright = winSurface.get_rect().topright
 
-
     game_over = capCellGame.is_game_over()
 
+
+	# Game loop
     while True:
 
         # handle events
@@ -70,11 +72,15 @@ def main():
                             capCellGame.set_turn_p2()
                         else:
                             capCellGame.set_turn_p2()
-                    capCellGame.select_cell( pos )
+                    if pygame.mouse.get_pressed()[0]:
+                    	capCellGame.select_cell( pos, cellSprite.CELL_TYPES.NORM )
+                    elif pygame.mouse.get_pressed()[2]:
+                    	capCellGame.select_cell( pos, cellSprite.CELL_TYPES.STATIC )
 
         capCellGame.update()
         game_over = capCellGame.is_game_over()
 
+		# draw new frame based on game state
         winSurface.fill( GREY )
         if game_over != True:
             if capCellGame.in_round() != True:
