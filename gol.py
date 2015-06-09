@@ -19,7 +19,7 @@ def main():
     capCellGame = CapCellGameClass.CapCellGame()
     screen_height = capCellGame.get_screen_height()
     screen_width = capCellGame.get_screen_width()
-    frame_delay = 0.1
+    frame_delay = 0.005
 
     winSurface = pygame.display.set_mode( (screen_width, screen_height), 0, 32 )
     pygame.display.set_caption( 'Capture the Cell' )

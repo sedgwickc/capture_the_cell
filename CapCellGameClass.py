@@ -18,7 +18,7 @@ class CapCellGame():
     P1_SELECT = 'PLAYER ONE: Select Cells'
     P2_SELECT = 'PLAYER TWO: Select Cells'
     ROUND = 'ROUND #'
-    ROUND_LEN = 50 # number of generations per round
+    ROUND_LEN = 75 # number of generations per round
 
     COLOR_DEAD = BLACK
     COLOR_ALIVE = GREEN
@@ -27,8 +27,8 @@ class CapCellGame():
     COLOR_FLAG_P1 = CYAN
     COLOR_FLAG_P2 = RED
     
-    GRID_HEIGHT = 50
-    GRID_WIDTH = 50
+    GRID_HEIGHT = 60
+    GRID_WIDTH = 100
     BAR_TOP = 30
     BAR_BOTTOM = 50
     MARGIN = 1
@@ -72,18 +72,18 @@ class CapCellGame():
 
         # set player flags, turn into function!
         self.flag_p1 = []
-        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_WIDTH-2][CapCellGame.GRID_HEIGHT-2])
-        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_WIDTH-2][CapCellGame.GRID_HEIGHT-3])
-        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_WIDTH-3][CapCellGame.GRID_HEIGHT-2])
-        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_WIDTH-3][CapCellGame.GRID_HEIGHT-3])
+        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_HEIGHT-6][CapCellGame.GRID_WIDTH-6])
+        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_HEIGHT-6][CapCellGame.GRID_WIDTH-7])
+        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_HEIGHT-7][CapCellGame.GRID_WIDTH-6])
+        self.flag_p1.append(self.cell_grid[CapCellGame.GRID_HEIGHT-7][CapCellGame.GRID_WIDTH-7])
         for cell in self.flag_p1:
             cell.set_flag(CapCellGame.P_ONE, CapCellGame.COLOR_FLAG_P1)
 
         self.flag_p2 = []
-        self.flag_p2.append(self.cell_grid[1][1])
-        self.flag_p2.append(self.cell_grid[1][2])
-        self.flag_p2.append(self.cell_grid[2][1])
-        self.flag_p2.append(self.cell_grid[2][2])
+        self.flag_p2.append(self.cell_grid[5][5])
+        self.flag_p2.append(self.cell_grid[5][6])
+        self.flag_p2.append(self.cell_grid[6][5])
+        self.flag_p2.append(self.cell_grid[6][6])
         for cell in self.flag_p2:
             cell.set_flag(CapCellGame.P_TWO, CapCellGame.COLOR_FLAG_P2)
 

@@ -16,6 +16,7 @@ class cellSprite( pygame.sprite.Sprite ):
 
     NONE = 0
     CELL_TYPES = Enum( 'CELL_TYPES', 'STATIC NORM' )
+    STATIC_LIFESPAN = 175
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -42,7 +43,7 @@ class cellSprite( pygame.sprite.Sprite ):
         self.owner_color = color
         self.cell_type = c_type
         if c_type == cellSprite.CELL_TYPES.STATIC:
-            self.lifespan = 125
+            self.lifespan = cellSprite.STATIC_LIFESPAN
         self.image.fill( color )
 
     def is_alive( self ):
@@ -50,6 +51,7 @@ class cellSprite( pygame.sprite.Sprite ):
 
     def kill( self ):
         self.alive = False
+        self.cell_type = cellSprite.CELL_TYPES.NORM
         self.owner = cellSprite.NONE
         self.image.fill( cellSprite.COLOR_DEAD )
 
